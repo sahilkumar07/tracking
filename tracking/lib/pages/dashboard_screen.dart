@@ -6,7 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Background Message: ${message.notification?.title} - ${message.notification?.body}");
+  print(
+      "Background Message: ${message.notification?.title} - ${message.notification?.body}");
 }
 
 class DashboardScreen extends StatefulWidget {
@@ -32,20 +33,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _firebaseMessaging = FirebaseMessaging.instance;
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     _initializePushNotifications();
-    _fetchUserData(); 
+    _fetchUserData();
   }
 
   void _initializePushNotifications() async {
-    
-    NotificationSettings settings = await _firebaseMessaging.requestPermission();
-    
+    NotificationSettings settings =
+        await _firebaseMessaging.requestPermission();
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     final InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onSelectNotification: _onSelectNotification, 
+      onSelectNotification: _onSelectNotification,
     );
 
     _firebaseMessaging.getToken().then((token) async {
@@ -59,7 +60,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      print("Notification Clicked (Background): ${message.notification?.title}");
+      print(
+          "Notification Clicked (Background): ${message.notification?.title}");
       _navigateToApplicationStatusScreen();
     });
 
@@ -67,19 +69,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> showNotification(String? title, String? body) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
       'channel_id',
       'Important Updates',
       importance: Importance.max,
       priority: Priority.high,
     );
-    const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidDetails);
     await flutterLocalNotificationsPlugin.show(
       0,
       title ?? "New Notification",
       body ?? "You have an update",
       notificationDetails,
-      payload: 'Custom Data', 
+      payload: 'Custom Data',
     );
   }
 
@@ -108,7 +112,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
 
         if (userDoc.exists) {
           setState(() {
@@ -137,7 +142,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Dashboard"),backgroundColor:const Color.fromARGB(255, 236, 191, 10),),
+      appBar: AppBar(
+        title: Text("Dashboard"),
+        backgroundColor: const Color.fromARGB(255, 236, 191, 10),
+      ),
       body: Padding(
         padding: EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -146,41 +154,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               Container(
                 padding: EdgeInsets.all(20),
-                width: double.infinity, 
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.blueAccent.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
-                 
                 ),
                 margin: EdgeInsets.only(bottom: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Student Details", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.blue)),
+                    Text("Student Details",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue)),
                     SizedBox(height: 10),
-                    Text("Name: $studentName", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)), 
-                    Text("Email: $studentEmail", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)), 
-                    Text("Phone: $studentPhone", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)), 
+                    Text("Name: $studentName",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    Text("Email: $studentEmail",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    Text("Phone: $studentPhone",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
                     SizedBox(height: 10),
-                    Text("Application Status: $applicationStatus", 
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, 
-                        color: applicationStatus == 'Completed' ? Colors.green : Colors.blueAccent)),
+                    Text("Application Status: $applicationStatus",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: applicationStatus == 'Completed'
+                                ? Colors.green
+                                : Colors.blueAccent)),
                   ],
                 ),
               ),
-
               Card(
                 elevation: 5,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: ListTile(
-                  title: Text('View Application Status', style: TextStyle(fontWeight: FontWeight.bold)),
+                  title: Text('View Application Status',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text('Current Status: $applicationStatus'),
                   onTap: () async {
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ApplicationStatusScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => ApplicationStatusScreen()),
                     );
-                    _fetchUserData(); 
+                    _fetchUserData();
                   },
                 ),
               ),
@@ -191,4 +220,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-
