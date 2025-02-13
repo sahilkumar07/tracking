@@ -129,7 +129,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
     } catch (e) {
       setState(() {
-        applicationStatus = 'Error fetching data';
+        applicationStatus = 'Incomplete';
       });
     }
   }
